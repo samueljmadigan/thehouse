@@ -20,7 +20,7 @@ jobs:
 
     - name: Install Libraries
       run: |
-        pip install requests
+        pip install requests scipy pandas numpy
 
     - name: Run Sniper Engine
       env:
