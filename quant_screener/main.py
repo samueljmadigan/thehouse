@@ -9,7 +9,6 @@ from alerts import send_discord_alert
 # Import Scrapers
 from scrapers.prizepicks import scrape_prizepicks
 from scrapers.underdog import scrape_underdog
-# Sleeper is disabled for now
 
 # ✅ PAID PLAN ENABLED: We can now scan these props!
 PROP_MARKETS = [
@@ -28,7 +27,7 @@ def get_market_for_current_time():
     return PROP_MARKETS[index]
 
 def run_iteration():
-    print("--- 🚀 QUANT SNIPER: PAID TIER MODE ---")
+    print(f"--- 🚀 QUANT SNIPER: PAID TIER MODE | {datetime.now().strftime('%H:%M')} ---")
     
     # 1. Select Market
     current_market = get_market_for_current_time()
@@ -42,11 +41,14 @@ def run_iteration():
         try:
             if config.ENABLE_PRIZEPICKS: scraped_data['prizepicks'] = scrape_prizepicks()
             if config.ENABLE_UNDERDOG:   scraped_data['underdog'] = scrape_underdog()
+            # Log successful scrape counts
+            pp_count = len(scraped_data.get('prizepicks', []))
+            ud_count = len(scraped_data.get('underdog', []))
+            print(f"   ✅ DFS Data: {pp_count} PP lines, {ud_count} UD lines.")
         except Exception as e:
             print(f"   ⚠️ Scraping Error: {e}")
 
     # 3. Scan Sports
-    # We scan NBA, NHL, and NCAAB
     sports = ['nba', 'nhl', 'ncaab'] 
     
     for sport in sports:
@@ -56,16 +58,15 @@ def run_iteration():
         api_sport = f"icehockey_{sport}" if sport == 'nhl' else f"basketball_{sport}"
         
         try:
-            # A. Fetch Odds (Using your Paid Key)
-            # Note: We fetch 'us' bookmakers. If you are in UK/EU, change region='eu'
+            # A. Fetch Odds (Using the Event-Specific logic in odds_fetcher.py)
             sharp_data = fetch_odds(api_sport, markets=current_market)
             
             # B. Check for valid data
             if not sharp_data:
-                print(f"   ⚠️ API returned no odds for {sport} (Check your plan/quota).")
+                print(f"   ⚠️ No data returned for {sport} (Check API quota or market availability).")
                 continue
                 
-            # C. Find Edges
+            # C. Find Edges (Compares Odds API vs Scraped DFS data)
             opportunities = find_value_bets(sharp_data, scraped_data, bankroll=5000)
             
             # D. Alert
@@ -80,5 +81,4 @@ def run_iteration():
             print(f"   ❌ Failed to scan {sport}: {e}")
 
 if __name__ == "__main__":
-    # Run immediately (GitHub controls the schedule)
     run_iteration()
