@@ -2,9 +2,8 @@ name: Quant Sniper Bot
 
 on:
   schedule:
-    # Runs every 15 minutes
     - cron: '*/15 * * * *'
-  workflow_dispatch: # Allows manual button click
+  workflow_dispatch:
 
 jobs:
   run-sniper:
@@ -25,7 +24,6 @@ jobs:
 
     - name: Run Sniper Engine
       env:
-        # These pull from your GitHub Secrets
         ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         PYTHONPATH: .
