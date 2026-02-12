@@ -9,10 +9,10 @@ API_KEY = "d926d60e4602dd8367e8ab46d6b07b66"
 
 # --- STRATEGY SETTINGS ---
 # 1. Standard Value Bets (High Edge)
-MIN_EDGE = 0.025          # Minimum 2.5% EV to trigger a bet
-KELLY_MULTIPLIER = 0.25   # Fractional Kelly (conservative)
-MIN_ODDS = 1.50           # Minimum Decimal Odds (-200 American)
-MAX_ODDS = 4.00           # Maximum Decimal Odds (+300 American)
+MIN_EDGE = 0.015          # Minimum 2.5% EV to trigger a bet
+KELLY_MULTIPLIER = 0.2   # Fractional Kelly (conservative)
+MIN_ODDS = 1.2           # Minimum Decimal Odds (-200 American)
+MAX_ODDS = 4.2          # Maximum Decimal Odds (+300 American)
 
 # 2. Safe / Grinder Bets (High Probability)
 # These settings look for lower returns but much higher win rates (65%+)
